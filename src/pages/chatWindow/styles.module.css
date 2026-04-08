@@ -20,8 +20,71 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 12px;
+  border-radius: 16px;
   box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(253, 242, 248, 0.55) 42%,
+    rgba(252, 231, 243, 0.52) 100%
+  );
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  box-shadow:
+    0 4px 6px -1px rgba(157, 23, 77, 0.05),
+    0 14px 32px -10px rgba(219, 39, 119, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.card :global(.ant-card-head) {
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(251, 207, 232, 0.65);
+  background: linear-gradient(
+    92deg,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(252, 231, 243, 0.72) 38%,
+    rgba(251, 207, 232, 0.45) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card :global(.ant-card-head-title) {
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  background: linear-gradient(92deg, #9d174d 0%, #db2777 42%, #f472b6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* 顶部「清空」：粉色描边玻璃按钮 */
+.card :global(.ant-card-extra .ant-btn-default) {
+  font-weight: 500;
+  border-color: rgba(244, 114, 182, 0.5);
+  color: #9d174d;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(219, 39, 119, 0.08);
+}
+
+.card :global(.ant-card-extra .ant-btn-default:hover:not(:disabled)) {
+  border-color: #f472b6;
+  color: #831843;
+  background: rgba(252, 231, 243, 0.92);
+}
+
+.card :global(.ant-card-extra .ant-btn-default:active:not(:disabled)) {
+  border-color: #db2777;
+  color: #831843;
+}
+
+.card :global(.ant-card-extra .ant-btn-default:disabled) {
+  border-color: rgba(244, 114, 182, 0.25);
+  color: rgba(157, 23, 77, 0.35);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .cardBody {
@@ -51,16 +114,26 @@
   inset-inline-end: 10px;
   bottom: 10px;
   z-index: 5;
+  box-shadow: 0 6px 18px rgba(219, 39, 119, 0.28) !important;
+}
+
+.backTop:global(.ant-float-btn-primary) {
+  background: linear-gradient(145deg, #db2777 0%, #f472b6 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+}
+
+.backTop:global(.ant-float-btn-primary:hover) {
+  background: linear-gradient(145deg, #be185d 0%, #ec4899 100%) !important;
 }
 
 @media (max-width: 768px) {
   .root {
     max-width: 100%;
-    padding: 8px;
-    padding-top: max(8px, env(safe-area-inset-top, 0));
-    padding-bottom: max(8px, env(safe-area-inset-bottom, 0));
-    padding-left: max(8px, env(safe-area-inset-left, 0));
-    padding-right: max(8px, env(safe-area-inset-right, 0));
+    padding: 12px;
+    padding-top: max(12px, env(safe-area-inset-top, 0));
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0));
+    padding-left: max(12px, env(safe-area-inset-left, 0));
+    padding-right: max(12px, env(safe-area-inset-right, 0));
   }
 
   .card :global(.ant-card-head) {

@@ -5,12 +5,16 @@
 
 .avatarAi {
   flex-shrink: 0;
-  background: #1677ff !important;
+  background: linear-gradient(145deg, #db2777, #f472b6) !important;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 2px 12px rgba(219, 39, 119, 0.38);
 }
 
 .avatarUser {
   flex-shrink: 0;
-  background: #52c41a !important;
+  background: linear-gradient(145deg, #be185d, #ec4899) !important;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 2px 12px rgba(190, 24, 93, 0.32);
 }
 
 /* 列用 flex-end 时子项宽度为 max-content 导致不换行；stretch + 卡片 max-width 约束换行 */
@@ -26,15 +30,33 @@
   min-width: 0;
   max-width: 100%;
   width: fit-content;
+  border-radius: 14px !important;
+  overflow: hidden;
 }
 
 .bubbleCardUser {
   margin-inline-start: auto;
-  background: var(--ant-color-primary-bg);
+  border: 1px solid rgba(244, 114, 182, 0.42) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(252, 231, 243, 0.95) 0%,
+    rgba(251, 207, 232, 0.88) 55%,
+    rgba(253, 242, 248, 0.92) 100%
+  ) !important;
+  box-shadow: 0 4px 16px rgba(219, 39, 119, 0.1);
 }
 
 .bubbleCardAssistant {
   margin-inline-end: auto;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(253, 242, 248, 0.48) 100%
+  ) !important;
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  box-shadow: 0 4px 18px rgba(157, 23, 77, 0.06);
 }
 
 .userParagraph {
@@ -47,6 +69,7 @@
 
 .roleHint {
   font-size: 12px;
+  color: rgba(157, 23, 77, 0.52) !important;
 }
 
 .roleHintUser {
@@ -55,6 +78,26 @@
 
 .roleHintAssistant {
   align-self: flex-start;
+}
+
+/* 用户消息：底部操作区（复制 + 角色），对齐 ChatGPT / Gemini 网页版习惯 */
+.userFooter {
+  margin-top: 4px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+
+.copyBtn {
+  flex-shrink: 0;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  color: rgba(157, 23, 77, 0.5) !important;
+}
+
+.copyBtn:hover {
+  color: #db2777 !important;
+  background: rgba(252, 231, 243, 0.95) !important;
 }
 
 @media (max-width: 768px) {

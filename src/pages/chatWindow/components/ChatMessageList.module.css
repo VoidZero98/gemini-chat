@@ -14,6 +14,12 @@
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(253, 242, 248, 0.5) 38%,
+    rgba(252, 231, 243, 0.42) 100%
+  );
 }
 
 .messageList::-webkit-scrollbar {
