@@ -132,7 +132,7 @@ export const ChatMessageRow = ({ message, assistantPending }: Props) => {
             )}
             <Text
               type="secondary"
-              className={`${styles.roleHint} ${styles.roleHintUser}`}
+              className={`${styles.roleHint} ${styles.roleHintUser} ${styles.roleLabelUser}`}
             >
               我
             </Text>

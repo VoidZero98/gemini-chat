@@ -3,18 +3,20 @@
   max-width: 100%;
 }
 
+/* AI：玫粉→亮粉，与助手气泡同色系（与用户橙黄侧区分） */
 .avatarAi {
   flex-shrink: 0;
-  background: linear-gradient(145deg, #db2777, #f472b6) !important;
+  background: linear-gradient(145deg, #be185d, #f472b6) !important;
   border: 2px solid rgba(255, 255, 255, 0.75);
   box-shadow: 0 2px 12px rgba(219, 39, 119, 0.38);
 }
 
+/* 用户：橙→琥珀黄（与 AI 玫粉区分）；与气泡同色系 */
 .avatarUser {
   flex-shrink: 0;
-  background: linear-gradient(145deg, #be185d, #ec4899) !important;
+  background: linear-gradient(145deg, #ea580c, #fbbf24) !important;
   border: 2px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 2px 12px rgba(190, 24, 93, 0.32);
+  box-shadow: 0 2px 12px rgba(234, 88, 12, 0.35);
 }
 
 /* 列用 flex-end 时子项宽度为 max-content 导致不换行；stretch + 卡片 max-width 约束换行 */
@@ -36,27 +38,28 @@
 
 .bubbleCardUser {
   margin-inline-start: auto;
-  border: 1px solid rgba(244, 114, 182, 0.42) !important;
+  border: 1px solid rgba(251, 146, 60, 0.45) !important;
+  /* 长内容时底部仍以浅白为主，中段淡橙奶黄 */
   background: linear-gradient(
     135deg,
-    rgba(252, 231, 243, 0.95) 0%,
-    rgba(251, 207, 232, 0.88) 55%,
-    rgba(253, 242, 248, 0.92) 100%
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 247, 237, 0.94) 38%,
+    rgba(255, 253, 250, 0.99) 100%
   ) !important;
-  box-shadow: 0 4px 16px rgba(219, 39, 119, 0.1);
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.1);
 }
 
 .bubbleCardAssistant {
   margin-inline-end: auto;
-  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(244, 114, 182, 0.48) !important;
+  /* 长回复时底部不收窄到深玫粉，避免整段底部「一片红」 */
   background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.62) 0%,
-    rgba(253, 242, 248, 0.48) 100%
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 247, 250, 0.94) 38%,
+    rgba(255, 255, 255, 0.99) 100%
   ) !important;
-  backdrop-filter: blur(12px) saturate(160%);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
-  box-shadow: 0 4px 18px rgba(157, 23, 77, 0.06);
+  box-shadow: 0 4px 16px rgba(219, 39, 119, 0.11);
 }
 
 .userParagraph {
@@ -74,30 +77,46 @@
 
 .roleHintUser {
   align-self: flex-end;
+  color: rgba(180, 83, 9, 0.62) !important;
 }
 
 .roleHintAssistant {
   align-self: flex-start;
+  color: rgba(157, 23, 77, 0.58) !important;
 }
 
-/* 用户消息：底部操作区（复制 + 角色），对齐 ChatGPT / Gemini 网页版习惯 */
+/* 用户消息：底部操作区（复制 + 角色），与「我」同一行垂直居中对齐 */
 .userFooter {
   margin-top: 4px;
   flex-shrink: 0;
   min-width: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.roleLabelUser {
+  display: inline-flex !important;
+  align-items: center;
+  height: 28px;
+  margin: 0 !important;
+  line-height: 28px !important;
 }
 
 .copyBtn {
   flex-shrink: 0;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   width: 28px !important;
   height: 28px !important;
   padding: 0 !important;
-  color: rgba(157, 23, 77, 0.5) !important;
+  line-height: 1 !important;
+  color: rgba(234, 88, 12, 0.52) !important;
 }
 
 .copyBtn:hover {
-  color: #db2777 !important;
-  background: rgba(252, 231, 243, 0.95) !important;
+  color: #c2410c !important;
+  background: rgba(255, 237, 213, 0.95) !important;
 }
 
 @media (max-width: 768px) {

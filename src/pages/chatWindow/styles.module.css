@@ -39,6 +39,8 @@
 
 .card :global(.ant-card-head) {
   flex-shrink: 0;
+  position: relative;
+  z-index: 2;
   border-bottom: 1px solid rgba(251, 207, 232, 0.65);
   background: linear-gradient(
     92deg,
@@ -101,12 +103,15 @@
 /* 消息区相对定位，用于右下角「回到顶部」悬浮按钮 */
 .scrollWrap {
   position: relative;
+  z-index: 1;
   flex: 1;
   min-height: 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* 与标题栏留出间距，避免滚动时视觉上压住 header 下边框 */
+  padding-top: 12px;
 }
 
 .backTop {

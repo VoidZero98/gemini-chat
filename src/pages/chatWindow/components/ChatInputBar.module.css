@@ -4,8 +4,8 @@
   border-top: 1px solid rgba(251, 207, 232, 0.75);
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(252, 231, 243, 0.72) 100%
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(253, 242, 248, 0.5) 100%
   );
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
@@ -22,8 +22,8 @@
   overflow: hidden;
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(253, 242, 248, 0.9) 100%
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 250, 252, 0.96) 100%
   );
   box-shadow: 0 2px 12px rgba(219, 39, 119, 0.07);
   transition:
@@ -59,8 +59,8 @@
   border-top: 1px solid rgba(251, 207, 232, 0.65);
   background: linear-gradient(
     180deg,
-    rgba(255, 255, 255, 0.35) 0%,
-    rgba(252, 231, 243, 0.45) 100%
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(252, 250, 252, 0.65) 100%
   );
 }
 

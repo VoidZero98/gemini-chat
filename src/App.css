@@ -39,10 +39,10 @@ body,
     linear-gradient(
       168deg,
       #fffafc 0%,
-      #fdf2f8 32%,
-      #fce7f3 58%,
-      #fbcfe8 88%,
-      #fce7f3 100%
+      #fdf2f8 35%,
+      #fce7f3 62%,
+      #fff5f9 92%,
+      #fefcfd 100%
     );
   background-attachment: fixed;
 }
