@@ -17,7 +17,7 @@
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  border: 1px solid rgba(244, 114, 182, 0.38);
+  border: 1px solid rgba(251, 207, 232, 0.75);
   border-radius: var(--ant-border-radius-lg, 8px);
   overflow: hidden;
   background: linear-gradient(
@@ -25,17 +25,17 @@
     rgba(255, 255, 255, 0.98) 0%,
     rgba(255, 250, 252, 0.96) 100%
   );
-  box-shadow: 0 2px 12px rgba(219, 39, 119, 0.07);
+  box-shadow: 0 2px 12px rgba(232, 121, 185, 0.06);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
 
 .composer:focus-within {
-  border-color: rgba(219, 39, 119, 0.45);
+  border-color: rgba(232, 121, 185, 0.38);
   box-shadow:
-    0 2px 12px rgba(219, 39, 119, 0.1),
-    0 0 0 3px rgba(244, 114, 182, 0.2);
+    0 2px 12px rgba(232, 121, 185, 0.08),
+    0 0 0 3px rgba(251, 207, 232, 0.45);
 }
 
 .textarea :global(textarea.ant-input) {
@@ -46,7 +46,7 @@
 }
 
 .textarea :global(textarea.ant-input::placeholder) {
-  color: rgba(157, 23, 77, 0.38);
+  color: rgba(168, 85, 124, 0.32);
 }
 
 .toolbar {
@@ -69,22 +69,27 @@
   min-width: 0;
   font-size: 12px;
   line-height: 1.4;
-  color: rgba(157, 23, 77, 0.48);
+  color: rgba(168, 85, 124, 0.42);
   user-select: none;
 }
 
-.sendBtn {
+/* 发送：禁用 default 与 primary 共用占位宽度，避免禁用时变窄 */
+.sendBtnBase {
   flex-shrink: 0;
+  box-sizing: border-box;
   min-width: 88px;
   font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  background: linear-gradient(145deg, #db2777 0%, #f472b6 100%) !important;
-  box-shadow: 0 4px 14px rgba(219, 39, 119, 0.32);
+}
+
+.sendBtn {
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  background: linear-gradient(145deg, #e879b9 0%, #f472b6 100%) !important;
+  box-shadow: 0 4px 14px rgba(232, 121, 185, 0.22);
 }
 
 .sendBtn:hover:not(:disabled) {
-  background: linear-gradient(145deg, #be185d 0%, #ec4899 100%) !important;
-  box-shadow: 0 6px 18px rgba(219, 39, 119, 0.38);
+  background: linear-gradient(145deg, #e05a9f 0%, #ec4899 100%) !important;
+  box-shadow: 0 6px 18px rgba(232, 121, 185, 0.26);
 }
 
 @media (max-width: 768px) {
@@ -111,9 +116,10 @@
     font-size: 11px;
   }
 
-  .sendBtn {
+  .sendBtnBase {
     order: 2;
     width: 100%;
+    min-width: 0;
     min-height: 44px;
   }
 }

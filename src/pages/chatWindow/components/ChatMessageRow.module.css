@@ -3,20 +3,20 @@
   max-width: 100%;
 }
 
-/* AI：玫粉→亮粉，与助手气泡同色系（与用户橙黄侧区分） */
+/* AI：柔和玫粉渐变，与助手气泡同色系 */
 .avatarAi {
   flex-shrink: 0;
-  background: linear-gradient(145deg, #be185d, #f472b6) !important;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 2px 12px rgba(219, 39, 119, 0.38);
+  background: linear-gradient(145deg, #e879b9, #fce7f3) !important;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 12px rgba(232, 121, 185, 0.22);
 }
 
-/* 用户：橙→琥珀黄（与 AI 玫粉区分）；与气泡同色系 */
+/* 用户：蜜桃杏黄，减轻对比但仍与 AI 区分 */
 .avatarUser {
   flex-shrink: 0;
-  background: linear-gradient(145deg, #ea580c, #fbbf24) !important;
-  border: 2px solid rgba(255, 255, 255, 0.75);
-  box-shadow: 0 2px 12px rgba(234, 88, 12, 0.35);
+  background: linear-gradient(145deg, #fb923c, #fde68a) !important;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 12px rgba(251, 146, 60, 0.22);
 }
 
 /* 列用 flex-end 时子项宽度为 max-content 导致不换行；stretch + 卡片 max-width 约束换行 */
@@ -38,28 +38,28 @@
 
 .bubbleCardUser {
   margin-inline-start: auto;
-  border: 1px solid rgba(251, 146, 60, 0.45) !important;
-  /* 长内容时底部仍以浅白为主，中段淡橙奶黄 */
+  border: 1px solid rgba(253, 186, 116, 0.42) !important;
+  /* 长内容时底部仍以浅白为主，中段淡杏奶黄 */
   background: linear-gradient(
     135deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(255, 247, 237, 0.94) 38%,
+    rgba(255, 250, 245, 0.94) 38%,
     rgba(255, 253, 250, 0.99) 100%
   ) !important;
-  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.1);
+  box-shadow: 0 4px 16px rgba(251, 146, 60, 0.08);
 }
 
 .bubbleCardAssistant {
   margin-inline-end: auto;
-  border: 1px solid rgba(244, 114, 182, 0.48) !important;
-  /* 长回复时底部不收窄到深玫粉，避免整段底部「一片红」 */
+  border: 1px solid rgba(251, 207, 232, 0.75) !important;
+  /* 长回复保持浅粉白，避免底部发闷 */
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(255, 247, 250, 0.94) 38%,
+    rgba(255, 250, 252, 0.94) 38%,
     rgba(255, 255, 255, 0.99) 100%
   ) !important;
-  box-shadow: 0 4px 16px rgba(219, 39, 119, 0.11);
+  box-shadow: 0 4px 16px rgba(232, 121, 185, 0.08);
 }
 
 .userParagraph {
@@ -72,17 +72,17 @@
 
 .roleHint {
   font-size: 12px;
-  color: rgba(157, 23, 77, 0.52) !important;
+  color: rgba(168, 85, 124, 0.45) !important;
 }
 
 .roleHintUser {
   align-self: flex-end;
-  color: rgba(180, 83, 9, 0.62) !important;
+  color: rgba(194, 110, 52, 0.52) !important;
 }
 
 .roleHintAssistant {
   align-self: flex-start;
-  color: rgba(157, 23, 77, 0.58) !important;
+  color: rgba(168, 85, 124, 0.5) !important;
 }
 
 /* 用户消息：底部操作区（复制 + 角色），与「我」同一行垂直居中对齐 */
@@ -120,12 +120,12 @@
   height: 28px !important;
   padding: 0 !important;
   line-height: 1 !important;
-  color: rgba(234, 88, 12, 0.52) !important;
+  color: rgba(251, 146, 60, 0.48) !important;
 }
 
 .copyBtn:hover {
-  color: #c2410c !important;
-  background: rgba(255, 237, 213, 0.95) !important;
+  color: #ea8a3c !important;
+  background: rgba(255, 243, 230, 0.95) !important;
 }
 
 .assistantFooter {
@@ -145,12 +145,12 @@
   height: 28px !important;
   padding: 0 !important;
   line-height: 1 !important;
-  color: rgba(157, 23, 77, 0.45) !important;
+  color: rgba(168, 85, 124, 0.4) !important;
 }
 
 .copyBtnAssistant:hover {
-  color: #be185d !important;
-  background: rgba(252, 231, 243, 0.95) !important;
+  color: #d946a0 !important;
+  background: rgba(253, 242, 248, 0.95) !important;
 }
 
 @media (max-width: 768px) {

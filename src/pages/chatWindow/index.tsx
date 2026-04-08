@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { nextId } from "@/utils/id";
 import { sendChatMessage, getUpstreamToastMessage } from "@/api/chat";
 import { useStickToBottom } from "@/hooks/useStickToBottom";
@@ -8,12 +8,29 @@ import { Button, Card, Flex, FloatButton, message } from "antd";
 import styles from "./styles.module.css";
 import type { ChatMessage } from "@/api/chat";
 
+const DEFAULT_CARD_TITLE = "Gemini Chat";
+const CARD_TITLE_MAX_LEN = 48;
+
+function cardTitleFromMessages(messages: ChatMessage[]): string {
+  const first = messages.find((m) => m.role === "user" && m.content.trim());
+  const t = first?.content.trim() ?? "";
+  if (!t) return DEFAULT_CARD_TITLE;
+  return t.length > CARD_TITLE_MAX_LEN
+    ? `${t.slice(0, CARD_TITLE_MAX_LEN)}…`
+    : t;
+}
+
 export const ChatWindow = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const listScrollRef = useRef<HTMLDivElement>(null);
   const { pinToBottom } = useStickToBottom(listScrollRef, messages);
+
+  const cardTitle = useMemo(
+    () => cardTitleFromMessages(messages),
+    [messages],
+  );
 
   const handleClear = () => {
     if (loading) return;
@@ -69,9 +86,14 @@ export const ChatWindow = () => {
   return (
     <Flex vertical className={styles.root}>
       <Card
-        title="Gemini Chat"
+        title={cardTitle}
         extra={
-          <Button onClick={handleClear} disabled={loading}>
+          <Button
+            color="primary"
+            variant="outlined"
+            onClick={handleClear}
+            disabled={loading}
+          >
             清空
           </Button>
         }
@@ -85,6 +107,11 @@ export const ChatWindow = () => {
             maxWidth: "100%",
             minWidth: 0,
             boxSizing: "border-box",
+            /* 覆盖 ant-card-bordered 的 colorBorderSecondary，避免左右像白缝 */
+            borderColor: "rgba(251, 207, 232, 0.92)",
+          },
+          header: {
+            background: "#fdf2f8",
           },
         }}
       >

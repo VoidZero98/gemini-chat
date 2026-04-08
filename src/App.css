@@ -22,6 +22,8 @@ body,
 }
 
 .app-root {
+  position: relative;
+  isolation: isolate;
   height: 100%;
   min-height: 100%;
   max-height: 100%;
@@ -30,21 +32,32 @@ body,
   overflow: hidden;
   padding-left: env(safe-area-inset-left, 0);
   padding-right: env(safe-area-inset-right, 0);
-  /* 与聊天区粉色主题一致：柔粉基底 + 光斑 */
-  background-color: #fdf2f8;
+  /* 底层：粉紫光斑，供磨砂层模糊 */
+  background-color: #fae8f2;
   background-image:
-    radial-gradient(ellipse 120% 85% at 8% -8%, rgba(251, 207, 232, 0.65), transparent 52%),
-    radial-gradient(ellipse 95% 55% at 96% 12%, rgba(244, 114, 182, 0.22), transparent 48%),
-    radial-gradient(ellipse 75% 45% at 48% 102%, rgba(252, 165, 203, 0.28), transparent 50%),
+    radial-gradient(ellipse 120% 90% at 0% -20%, rgba(255, 182, 213, 0.55), transparent 55%),
+    radial-gradient(ellipse 95% 60% at 100% 0%, rgba(233, 213, 255, 0.45), transparent 50%),
+    radial-gradient(ellipse 80% 50% at 50% 110%, rgba(255, 228, 240, 0.65), transparent 52%),
     linear-gradient(
-      168deg,
-      #fffafc 0%,
-      #fdf2f8 35%,
-      #fce7f3 62%,
-      #fff5f9 92%,
-      #fefcfd 100%
+      165deg,
+      #fff5f9 0%,
+      #fce7f3 35%,
+      #f3e8ff 70%,
+      #fffafc 100%
     );
   background-attachment: fixed;
+}
+
+/* 全屏磨砂毛玻璃：backdrop 模糊底层渐变 */
+.app-root::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.26);
+  backdrop-filter: blur(32px) saturate(165%);
+  -webkit-backdrop-filter: blur(32px) saturate(165%);
 }
 
 @supports (height: 100dvh) {
@@ -55,6 +68,8 @@ body,
 }
 
 .app-chat-shell {
+  position: relative;
+  z-index: 1;
   flex: 1;
   min-height: 0;
   display: flex;
