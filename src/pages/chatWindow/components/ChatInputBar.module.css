@@ -1,0 +1,31 @@
+.wrap {
+  flex-shrink: 0;
+  padding: 20px;
+  border-top: 1px solid var(--ant-color-border-secondary);
+}
+
+.sendBtn {
+  align-self: flex-end;
+}
+
+@media (max-width: 768px) {
+  .wrap {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 14px 12px;
+    padding-bottom: max(14px, env(safe-area-inset-bottom, 0));
+    gap: 10px;
+  }
+
+  .wrap :global(textarea.ant-input),
+  .wrap :global(.ant-input) {
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+  }
+
+  .sendBtn {
+    align-self: stretch !important;
+    width: 100%;
+    min-height: 44px;
+  }
+}

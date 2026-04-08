@@ -1,0 +1,160 @@
+/* AI 回复：Markdown 与 GFM，与 antd 文本色、间距协调 */
+.assistant-md {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ant-color-text);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+}
+
+.assistant-md img {
+  max-width: 100%;
+  height: auto;
+}
+
+.assistant-md > :first-child {
+  margin-top: 0;
+}
+
+.assistant-md > :last-child {
+  margin-bottom: 0;
+}
+
+.assistant-md p {
+  margin: 0 0 0.65em;
+}
+
+.assistant-md p:last-child {
+  margin-bottom: 0;
+}
+
+.assistant-md strong {
+  font-weight: 600;
+  color: var(--ant-color-text-heading, var(--ant-color-text));
+}
+
+.assistant-md em {
+  font-style: italic;
+}
+
+.assistant-md h1,
+.assistant-md h2,
+.assistant-md h3,
+.assistant-md h4 {
+  margin: 0.85em 0 0.45em;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ant-color-text-heading, var(--ant-color-text));
+}
+
+.assistant-md h1 {
+  font-size: 1.25em;
+}
+
+.assistant-md h2 {
+  font-size: 1.15em;
+}
+
+.assistant-md h3,
+.assistant-md h4 {
+  font-size: 1.05em;
+}
+
+.assistant-md ul,
+.assistant-md ol {
+  margin: 0.5em 0;
+  padding-left: 1.35em;
+}
+
+.assistant-md li {
+  margin: 0.25em 0;
+}
+
+.assistant-md li > p {
+  margin: 0.25em 0;
+}
+
+.assistant-md blockquote {
+  margin: 0.65em 0;
+  padding: 0.35em 0 0.35em 0.85em;
+  border-left: 3px solid var(--ant-color-primary);
+  color: var(--ant-color-text-secondary);
+  background: var(--ant-color-fill-quaternary, rgba(0, 0, 0, 0.02));
+}
+
+.assistant-md hr {
+  margin: 0.85em 0;
+  border: none;
+  border-top: 1px solid var(--ant-color-border-secondary);
+}
+
+.assistant-md code {
+  padding: 0.1em 0.4em;
+  font-size: 0.9em;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  background: var(--ant-color-fill-secondary);
+  border-radius: var(--ant-border-radius-sm, 4px);
+}
+
+.assistant-md pre {
+  margin: 0.65em 0;
+  padding: 12px 14px;
+  overflow: auto;
+  font-size: 0.9em;
+  line-height: 1.55;
+  background: var(--ant-color-fill-secondary);
+  border-radius: var(--ant-border-radius, 6px);
+}
+
+.assistant-md pre code {
+  padding: 0;
+  font-size: inherit;
+  background: none;
+  border-radius: 0;
+}
+
+.assistant-md a {
+  color: var(--ant-color-link);
+  text-decoration: none;
+}
+
+.assistant-md a:hover {
+  color: var(--ant-color-link-hover);
+  text-decoration: underline;
+}
+
+.assistant-md table {
+  width: 100%;
+  margin: 0.65em 0;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.assistant-md th,
+.assistant-md td {
+  padding: 8px 10px;
+  border: 1px solid var(--ant-color-border-secondary);
+}
+
+.assistant-md th {
+  font-weight: 600;
+  background: var(--ant-color-fill-tertiary);
+}
+
+@media (max-width: 768px) {
+  .assistant-md {
+    font-size: 15px;
+  }
+
+  .assistant-md pre {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .assistant-md table {
+    font-size: 0.88em;
+  }
+}

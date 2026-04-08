@@ -1,0 +1,65 @@
+.row {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.avatarAi {
+  flex-shrink: 0;
+  background: #1677ff !important;
+}
+
+.avatarUser {
+  flex-shrink: 0;
+  background: #52c41a !important;
+}
+
+/* 列用 flex-end 时子项宽度为 max-content 导致不换行；stretch + 卡片 max-width 约束换行 */
+.bubbleColumn {
+  flex: 0 1 78%;
+  max-width: 78%;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.bubbleCard {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  width: fit-content;
+}
+
+.bubbleCardUser {
+  margin-inline-start: auto;
+  background: var(--ant-color-primary-bg);
+}
+
+.bubbleCardAssistant {
+  margin-inline-end: auto;
+}
+
+.userParagraph {
+  margin: 0;
+  margin-bottom: 0 !important;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.roleHint {
+  font-size: 12px;
+}
+
+.roleHintUser {
+  align-self: flex-end;
+}
+
+.roleHintAssistant {
+  align-self: flex-start;
+}
+
+@media (max-width: 768px) {
+  .bubbleColumn {
+    flex-basis: 88%;
+    max-width: 88%;
+  }
+}

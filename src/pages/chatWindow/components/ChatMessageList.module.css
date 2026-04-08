@@ -1,0 +1,37 @@
+.messageList {
+  box-sizing: border-box;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+}
+
+.messageList::-webkit-scrollbar {
+  display: none;
+}
+
+.messageListInner {
+  flex: 1;
+  min-height: min-content;
+  min-width: 0;
+}
+
+.emptyCenter {
+  margin: auto;
+}
+
+@media (max-width: 768px) {
+  .messageList {
+    padding: 12px 10px;
+  }
+}
