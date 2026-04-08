@@ -15,4 +15,5 @@ const normalizeModels = (m: string | ModelList): readonly string[] =>
 export const GEMINI_MODEL: readonly string[] = normalizeModels(
   mod?.GEMINI_MODEL ?? FALLBACK_MODEL,
 );
+
 export const GEMINI_API_KEY = mod?.GEMINI_API_KEY?.trim() ?? "";
