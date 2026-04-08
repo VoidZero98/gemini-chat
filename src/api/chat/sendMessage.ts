@@ -1,6 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
 import { GEMINI_API_KEY, GEMINI_MODEL } from "@/config/ai.config";
+import { getHttpStatus } from "./upstreamToast";
 import type { ChatMessage } from "./types";
+
+/** 429、非 503 的 5xx、无状态（多为网络）可换模型；503 与其它 4xx 不重试 */
+const shouldTryNextModel = (e: unknown): boolean => {
+  const status = getHttpStatus(e);
+  if (status === 429) return true;
+  if (status === 503) return false;
+  if (status !== undefined && status >= 500) return true;
+  if (status !== undefined && status >= 400 && status < 500) return false;
+  return true;
+};
 
 let client: GoogleGenAI | null = null;
 
@@ -27,14 +38,32 @@ export const sendChatMessage = async (
 ): Promise<void> => {
   void _history;
   const ai = getGenAI();
-  const stream = await ai.models.generateContentStream({
-    model: GEMINI_MODEL,
-    contents: content.trim(),
-  });
-  for await (const chunk of stream) {
-    const piece = chunk.text;
-    if (piece) onChunk(piece);
+  const text = content.trim();
+  const models = GEMINI_MODEL;
+  let lastErr: unknown;
+  for (let i = 0; i < models.length; i++) {
+    let emitted = false;
+    try {
+      const stream = await ai.models.generateContentStream({
+        model: models[i],
+        contents: text,
+      });
+      for await (const chunk of stream) {
+        const piece = chunk.text;
+        if (piece) {
+          emitted = true;
+          onChunk(piece);
+        }
+      }
+      return;
+    } catch (e) {
+      lastErr = e;
+      if (emitted) throw e;
+      if (i < models.length - 1 && shouldTryNextModel(e)) continue;
+      throw e;
+    }
   }
+  throw lastErr;
 };
 
 const TITLE_PROMPT_MAX_CHARS = 48;
@@ -55,15 +84,25 @@ export const generateChatTitle = async (
 
 用户消息：
 ${trimmed}`;
-  const res = await ai.models.generateContent({
-    model: GEMINI_MODEL,
-    contents: prompt,
-    config: {
-      maxOutputTokens: 128,
-      temperature: 0.3,
-    },
-  });
-  const raw = res.text?.trim() ?? "";
+  const models = GEMINI_MODEL;
+  let res: Awaited<ReturnType<GoogleGenAI["models"]["generateContent"]>>;
+  for (let i = 0; i < models.length; i++) {
+    try {
+      res = await ai.models.generateContent({
+        model: models[i],
+        contents: prompt,
+        config: {
+          maxOutputTokens: 128,
+          temperature: 0.3,
+        },
+      });
+      break;
+    } catch (e) {
+      if (i < models.length - 1 && shouldTryNextModel(e)) continue;
+      throw e;
+    }
+  }
+  const raw = res!.text?.trim() ?? "";
   let t = raw.replace(/\s+/g, " ").replace(/^["「『]|["」』]$/g, "").trim();
   if (t.length > TITLE_PROMPT_MAX_CHARS) {
     t = `${t.slice(0, TITLE_PROMPT_MAX_CHARS)}…`;
