@@ -1,75 +1,87 @@
-# React + TypeScript + Vite
+# chat-client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+基于 **React** + **Vite** 的浏览器端 **Gemini** 对话客户端：在页面内直连 Google Gemini API，支持**流式回复**、Markdown 渲染、消息复制与贴底滚动。
 
-Currently, two official plugins are available:
+## 技术栈
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| 类别 | 说明 |
+|------|------|
+| 运行时 | React 19、TypeScript |
+| 构建 | Vite 8，路径别名 `@/` → `src/` |
+| UI | Ant Design 6 |
+| AI | `@google/genai`（`generateContentStream` 流式生成） |
+| 内容 | `react-markdown` + `remark-gfm`（助手回复） |
+| 其它 | React Compiler（Babel `reactCompilerPreset`） |
 
-## React Compiler
+## 功能概览
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+- **流式输出**：逐 token/chunk 追加到当前助手气泡，不阻塞整段返回。
+- **贴底滚动**：仅在用户处于列表底部附近时随内容增高自动下滚；上滑阅读历史时不会强行拉回（`useStickToBottom`）。
+- **复制**：用户消息与助手消息均可一键复制（`useCopyToClipboard` + `CopyIconButton`）。
+- **上游限流/过载**：对 Google API 返回的 **429 / 503** 单独 `message.warning`，其余错误在气泡内展示。
 
-Note: This will impact Vite dev & build performances.
+## 环境要求
 
-## Expanding the ESLint configuration
+- **Node.js**（建议 LTS）
+- 包管理：**pnpm**（项目使用 `pnpm-lock.yaml`）
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 本地运行
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 1. 安装依赖
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. 配置 Gemini（必做）
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+密钥与默认模型通过 **本地配置文件** 注入（**勿提交**）：
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. 复制模板文件：
+
+   ```bash
+   cp src/config/ai.config.example.ts src/config/ai.config.local.ts
+   ```
+
+   Windows PowerShell 可用：`Copy-Item src/config/ai.config.example.ts src/config/ai.config.local.ts`
+
+2. 编辑 `src/config/ai.config.local.ts`，填写 **`GEMINI_API_KEY`**，按需修改 **`GEMINI_MODEL`**。
+
+`ai.config.local.ts` 已列入 `.gitignore`。聚合逻辑见 `src/config/ai.config.ts`（使用 `import.meta.glob` 加载本地模块）。
+
+### 3. 启动开发服务器
+
+```bash
+pnpm dev
 ```
+
+浏览器访问终端提示的本地地址即可。
+
+### 构建与预览
+
+```bash
+pnpm build
+pnpm preview
+```
+
+`vite.config.ts` 中 `base: "./"`，便于静态资源相对路径部署。
+
+## 目录结构（摘要）
+
+```
+src/
+  api/chat/          # 发送消息、上游错误文案、消息类型
+  components/        # 通用组件（如复制按钮、图标）
+  config/            # ai.config.ts / ai.config.example.ts（+ 本地 ai.config.local.ts）
+  hooks/             # 贴底滚动、剪贴板等
+  pages/chatWindow/  # 聊天主界面与消息列表、输入栏等
+```
+
+## 安全说明
+
+- **API Key 会进入前端打包产物**，任何能打开页面的人都有可能从网络或源码中拿到密钥，**不适合**在完全公开的站点上裸奔使用。
+- 若仓库曾提交过密钥，请在 Google Cloud 控制台**轮换密钥**，并避免将 `ai.config.local.ts` 加入版本控制。
+
+## 许可证
+
+私有项目；依赖库各自遵循其开源协议。
