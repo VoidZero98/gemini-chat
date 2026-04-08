@@ -1,6 +1,10 @@
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { nextId } from "@/utils/id";
-import { sendChatMessage, getUpstreamToastMessage } from "@/api/chat";
+import {
+  sendChatMessage,
+  generateChatTitle,
+  getUpstreamToastMessage,
+} from "@/api/chat";
 import { useStickToBottom } from "@/hooks/useStickToBottom";
 import { ChatInputBar } from "./components/ChatInputBar";
 import { ChatMessageList } from "./components/ChatMessageList";
@@ -9,37 +13,42 @@ import styles from "./styles.module.css";
 import type { ChatMessage } from "@/api/chat";
 
 const DEFAULT_CARD_TITLE = "Gemini Chat";
-const CARD_TITLE_MAX_LEN = 48;
-
-function cardTitleFromMessages(messages: ChatMessage[]): string {
-  const first = messages.find((m) => m.role === "user" && m.content.trim());
-  const t = first?.content.trim() ?? "";
-  if (!t) return DEFAULT_CARD_TITLE;
-  return t.length > CARD_TITLE_MAX_LEN
-    ? `${t.slice(0, CARD_TITLE_MAX_LEN)}…`
-    : t;
-}
 
 export const ChatWindow = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  /** 由模型总结的首条标题；清空会话时重置 */
+  const [sessionTitle, setSessionTitle] = useState<string | null>(null);
+  const titleGenSeqRef = useRef(0);
   const listScrollRef = useRef<HTMLDivElement>(null);
   const { pinToBottom } = useStickToBottom(listScrollRef, messages);
 
-  const cardTitle = useMemo(
-    () => cardTitleFromMessages(messages),
-    [messages],
-  );
+  const cardTitle = sessionTitle ?? DEFAULT_CARD_TITLE;
 
   const handleClear = () => {
     if (loading) return;
+    titleGenSeqRef.current += 1;
+    setSessionTitle(null);
     setMessages([]);
   };
 
   const handleSend = async () => {
     const text = input.trim();
     if (!text || loading) return;
+
+    const isFirstUserInSession = !messages.some(
+      (m) => m.role === "user" && m.content.trim(),
+    );
+    if (isFirstUserInSession) {
+      const seq = ++titleGenSeqRef.current;
+      void generateChatTitle(text)
+        .then((t) => {
+          if (seq !== titleGenSeqRef.current) return;
+          setSessionTitle(t);
+        })
+        .catch(() => {});
+    }
 
     pinToBottom();
 

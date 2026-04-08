@@ -26,8 +26,9 @@ export const getUpstreamToastMessage = (e: unknown): string | undefined => {
     const m = (e as { message: unknown }).message;
     if (typeof m === "string" && m.trim()) return m;
   }
-  if (status === 429)
+  if (status === 429) {
     return "今日额度已用完，请明天再试；也可在 Google AI Studio 查看或提升配额。";
+  }
   if (status === 503)
     return "此型号目前需求量较大。需求高峰通常是暂时的。请稍后再试。";
   return undefined;

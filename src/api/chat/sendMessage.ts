@@ -36,3 +36,40 @@ export const sendChatMessage = async (
     if (piece) onChunk(piece);
   }
 };
+
+const TITLE_PROMPT_MAX_CHARS = 48;
+
+/**
+ * 根据首条用户消息生成简短会话标题（非流式一次调用）。
+ */
+export const generateChatTitle = async (
+  userText: string,
+): Promise<string> => {
+  const trimmed = userText.trim();
+  if (!trimmed) {
+    throw new Error("empty user text");
+  }
+  const ai = getGenAI();
+  const prompt = `你是对话标题助手。根据用户的第一条消息，生成一个简短、准确的中文标题。
+要求：不超过 ${TITLE_PROMPT_MAX_CHARS} 个字符；不要引号或书名号；不要“关于”“讨论”等套话；只输出标题本身，不要换行或任何解释。
+
+用户消息：
+${trimmed}`;
+  const res = await ai.models.generateContent({
+    model: GEMINI_MODEL,
+    contents: prompt,
+    config: {
+      maxOutputTokens: 128,
+      temperature: 0.3,
+    },
+  });
+  const raw = res.text?.trim() ?? "";
+  let t = raw.replace(/\s+/g, " ").replace(/^["「『]|["」』]$/g, "").trim();
+  if (t.length > TITLE_PROMPT_MAX_CHARS) {
+    t = `${t.slice(0, TITLE_PROMPT_MAX_CHARS)}…`;
+  }
+  if (!t) {
+    throw new Error("empty title from model");
+  }
+  return t;
+};
