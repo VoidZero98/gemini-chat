@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+.env
+
+# 本地 AI 密钥与模型（从 ai.config.example.ts 复制为 ai.config.local.ts）
+src/config/ai.config.local.ts

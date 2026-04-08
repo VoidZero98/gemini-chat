@@ -102,6 +102,15 @@
   line-height: 28px !important;
 }
 
+/* 与复制按钮同高（28px），与用户侧「我」一致 */
+.roleLabelAssistant {
+  display: inline-flex !important;
+  align-items: center;
+  height: 28px;
+  margin: 0 !important;
+  line-height: 28px !important;
+}
+
 .copyBtn {
   flex-shrink: 0;
   display: inline-flex !important;
@@ -117,6 +126,31 @@
 .copyBtn:hover {
   color: #c2410c !important;
   background: rgba(255, 237, 213, 0.95) !important;
+}
+
+.assistantFooter {
+  margin-top: 4px;
+  flex-shrink: 0;
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.copyBtnAssistant {
+  flex-shrink: 0;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  color: rgba(157, 23, 77, 0.45) !important;
+}
+
+.copyBtnAssistant:hover {
+  color: #be185d !important;
+  background: rgba(252, 231, 243, 0.95) !important;
 }
 
 @media (max-width: 768px) {

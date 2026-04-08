@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { nextId } from "@/utils/id";
-import { sendChatMessage } from "@/api/chat";
-import { isUpstreamToastError } from "@/http";
+import { sendChatMessage, getUpstreamToastMessage } from "@/api/chat";
+import { useStickToBottom } from "@/hooks/useStickToBottom";
 import { ChatInputBar } from "./components/ChatInputBar";
 import { ChatMessageList } from "./components/ChatMessageList";
 import { Button, Card, Flex, FloatButton, message } from "antd";
@@ -12,8 +12,8 @@ export const ChatWindow = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const listEndRef = useRef<HTMLDivElement>(null);
   const listScrollRef = useRef<HTMLDivElement>(null);
+  const { pinToBottom } = useStickToBottom(listScrollRef, messages);
 
   const handleClear = () => {
     if (loading) return;
@@ -23,6 +23,8 @@ export const ChatWindow = () => {
   const handleSend = async () => {
     const text = input.trim();
     if (!text || loading) return;
+
+    pinToBottom();
 
     const userMsg: ChatMessage = {
       id: nextId(),
@@ -42,14 +44,17 @@ export const ChatWindow = () => {
     ]);
 
     try {
-      const reply = await sendChatMessage(text, historyForRequest);
-      setMessages((prev) =>
-        prev.map((m) => (m.id === assistantId ? { ...m, content: reply } : m)),
-      );
+      // 流式：与 generateContentStream 一致，按 chunk 追加到当前助手气泡
+      await sendChatMessage(text, historyForRequest, (piece) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === assistantId ? { ...m, content: m.content + piece } : m,
+          ),
+        );
+      });
     } catch (e) {
-      if (isUpstreamToastError(e)) {
-        message.warning(e.message);
-      }
+      const toastMsg = getUpstreamToastMessage(e);
+      if (toastMsg) message.warning(toastMsg);
       const err = e instanceof Error ? e.message : String(e);
       setMessages((prev) =>
         prev.map((m) =>
@@ -60,10 +65,6 @@ export const ChatWindow = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    listEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   return (
     <Flex vertical className={styles.root}>
@@ -92,7 +93,6 @@ export const ChatWindow = () => {
             ref={listScrollRef}
             messages={messages}
             loading={loading}
-            listEndRef={listEndRef}
           />
           <FloatButton.BackTop
             className={styles.backTop}
