@@ -19,6 +19,18 @@ const shouldTryNextModel = (e: unknown): boolean => {
 };
 
 let client: GoogleGenAI | null = null;
+let preferredModelIndex = 0;
+
+const getModelAttemptOrder = (
+  models: readonly string[],
+  preferredIndex: number,
+): number[] => {
+  if (models.length === 0) return [];
+  const start = ((preferredIndex % models.length) + models.length) % models.length;
+  return Array.from({ length: models.length }, (_, offset) => {
+    return (start + offset) % models.length;
+  });
+};
 
 const getGenAI = (): GoogleGenAI => {
   if (!client) {
@@ -62,12 +74,17 @@ export const sendChatMessage = async (
   const ai = getGenAI();
   const contents = chatMessagesToGeminiContents(history);
   const models = GEMINI_MODEL;
+  if (models.length === 0) {
+    throw new Error("GEMINI_MODEL 不能为空");
+  }
+  const attemptOrder = getModelAttemptOrder(models, preferredModelIndex);
   let lastErr: unknown;
-  for (let i = 0; i < models.length; i++) {
+  for (let attempt = 0; attempt < attemptOrder.length; attempt++) {
+    const modelIndex = attemptOrder[attempt];
     let emitted = false;
     try {
       const stream = await ai.models.generateContentStream({
-        model: models[i],
+        model: models[modelIndex],
         contents,
       });
       for await (const chunk of stream) {
@@ -77,11 +94,15 @@ export const sendChatMessage = async (
           onChunk(piece);
         }
       }
+      preferredModelIndex = modelIndex;
       return;
     } catch (e) {
       lastErr = e;
       if (emitted) throw e;
-      if (i < models.length - 1 && shouldTryNextModel(e)) continue;
+      if (attempt < attemptOrder.length - 1 && shouldTryNextModel(e)) {
+        preferredModelIndex = (modelIndex + 1) % models.length;
+        continue;
+      }
       throw e;
     }
   }
@@ -107,20 +128,29 @@ export const generateChatTitle = async (
 用户消息：
 ${trimmed}`;
   const models = GEMINI_MODEL;
+  if (models.length === 0) {
+    throw new Error("GEMINI_MODEL 不能为空");
+  }
+  const attemptOrder = getModelAttemptOrder(models, preferredModelIndex);
   let res: Awaited<ReturnType<GoogleGenAI["models"]["generateContent"]>>;
-  for (let i = 0; i < models.length; i++) {
+  for (let attempt = 0; attempt < attemptOrder.length; attempt++) {
+    const modelIndex = attemptOrder[attempt];
     try {
       res = await ai.models.generateContent({
-        model: models[i],
+        model: models[modelIndex],
         contents: prompt,
         config: {
           maxOutputTokens: 128,
           temperature: 0.3,
         },
       });
+      preferredModelIndex = modelIndex;
       break;
     } catch (e) {
-      if (i < models.length - 1 && shouldTryNextModel(e)) continue;
+      if (attempt < attemptOrder.length - 1 && shouldTryNextModel(e)) {
+        preferredModelIndex = (modelIndex + 1) % models.length;
+        continue;
+      }
       throw e;
     }
   }
