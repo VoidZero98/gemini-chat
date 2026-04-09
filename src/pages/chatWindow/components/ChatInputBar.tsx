@@ -8,6 +8,18 @@ type Props = {
   onSend: () => void;
 };
 
+const PaperPlaneIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    width="14"
+    height="14"
+    fill="currentColor"
+    style={{ display: "block" }}
+  >
+    <path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z" />
+  </svg>
+);
+
 export const ChatInputBar = ({ value, onChange, loading, onSend }: Props) => {
   const hasText = Boolean(value.trim());
   const primaryLook = hasText || loading;
@@ -38,6 +50,7 @@ export const ChatInputBar = ({ value, onChange, loading, onSend }: Props) => {
             onClick={() => void onSend()}
             loading={loading}
             disabled={loading || !hasText}
+            icon={!loading ? <PaperPlaneIcon /> : undefined}
             className={`${styles.sendBtnBase} ${primaryLook ? styles.sendBtn : ""}`}
           >
             发送

@@ -117,10 +117,10 @@ export const ChatWindow = () => {
             minWidth: 0,
             boxSizing: "border-box",
             /* 覆盖 ant-card-bordered 的 colorBorderSecondary，避免左右像白缝 */
-            borderColor: "rgba(251, 207, 232, 0.92)",
+            borderColor: "rgba(253, 213, 234, 0.85)",
           },
           header: {
-            background: "#fdf2f8",
+            background: "#fef7fb",
           },
         }}
       >

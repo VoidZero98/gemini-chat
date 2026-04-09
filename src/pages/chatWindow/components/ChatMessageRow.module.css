@@ -3,12 +3,12 @@
   max-width: 100%;
 }
 
-/* AI：柔和玫粉渐变，与助手气泡同色系 */
+/* AI：奶粉渐变，轻盈可爱 */
 .avatarAi {
   flex-shrink: 0;
-  background: linear-gradient(145deg, #e879b9, #fce7f3) !important;
-  border: 2px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 2px 12px rgba(232, 121, 185, 0.22);
+  background: linear-gradient(145deg, #f9a8d4, #fce7f3) !important;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 12px rgba(249, 168, 212, 0.22);
 }
 
 /* 用户：蜜桃杏黄，减轻对比但仍与 AI 区分 */
@@ -72,17 +72,17 @@
 
 .roleHint {
   font-size: 12px;
-  color: rgba(168, 85, 124, 0.45) !important;
+  color: rgba(200, 140, 170, 0.5) !important;
 }
 
 .roleHintUser {
   align-self: flex-end;
-  color: rgba(194, 110, 52, 0.52) !important;
+  color: rgba(210, 130, 80, 0.5) !important;
 }
 
 .roleHintAssistant {
   align-self: flex-start;
-  color: rgba(168, 85, 124, 0.5) !important;
+  color: rgba(200, 140, 170, 0.5) !important;
 }
 
 /* 用户消息：底部操作区（复制 + 角色），与「我」同一行垂直居中对齐 */
@@ -145,12 +145,12 @@
   height: 28px !important;
   padding: 0 !important;
   line-height: 1 !important;
-  color: rgba(168, 85, 124, 0.4) !important;
+  color: rgba(200, 140, 170, 0.42) !important;
 }
 
 .copyBtnAssistant:hover {
-  color: #d946a0 !important;
-  background: rgba(253, 242, 248, 0.95) !important;
+  color: #f472b6 !important;
+  background: rgba(254, 242, 250, 0.95) !important;
 }
 
 @media (max-width: 768px) {
