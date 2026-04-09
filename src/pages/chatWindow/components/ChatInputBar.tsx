@@ -31,7 +31,7 @@ export const ChatInputBar = ({ value, onChange, loading, onSend }: Props) => {
           onChange={(e) => onChange(e.target.value)}
           placeholder="输入消息…"
           variant="borderless"
-          autoSize={{ minRows: 4, maxRows: 12 }}
+          autoSize={{ minRows: 3, maxRows: 12 }}
           onPressEnter={(e) => {
             if (!e.shiftKey) {
               e.preventDefault();
