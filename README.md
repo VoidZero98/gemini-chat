@@ -66,6 +66,18 @@ pnpm preview
 
 `vite.config.ts` 中 `base: "./"`，便于静态资源相对路径部署。
 
+## GitHub Pages 自动部署密钥配置
+
+如果使用仓库内的 `pages.yml` 自动部署到 GitHub Pages，需要在仓库中配置 Actions Secret：
+
+1. 打开仓库 `Settings` -> `Secrets and variables` -> `Actions`。
+2. 点击 `New repository secret`。
+3. Name 填写：`GEMINI_API_KEY`。
+4. Secret 填写你的 Gemini API Key。
+5. 保存后再次触发 `pages.yml`（push 到 `main/master` 或手动 `Run workflow`）。
+
+部署流程会在构建前自动生成 `src/config/ai.config.local.ts`，并将 `GEMINI_API_KEY` 注入该文件。
+
 ## 目录结构（摘要）
 
 ```

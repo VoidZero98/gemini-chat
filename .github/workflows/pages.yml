@@ -39,6 +39,37 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Create local AI config from secret
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          node <<'NODE'
+          const { writeFileSync } = require("node:fs");
+
+          const key = process.env.GEMINI_API_KEY?.trim();
+          if (!key) {
+            throw new Error(
+              "Missing GitHub Actions secret GEMINI_API_KEY. Set it in repository settings before deploy.",
+            );
+          }
+
+          const content = `/**
+           * Auto-generated in CI from GitHub Actions secret.
+           * This file is generated during deploy and must not be committed.
+           */
+          export const GEMINI_MODEL = [
+            "gemini-2.5-flash-lite",
+            "gemini-2.5-flash",
+            "gemini-3-flash-preview",
+            "gemini-2.5-pro",
+          ];
+
+          export const GEMINI_API_KEY = ${JSON.stringify(key)};
+          `;
+
+          writeFileSync("src/config/ai.config.local.ts", content, "utf8");
+          NODE
+
       - name: Build
         run: pnpm build
 
