@@ -71,7 +71,7 @@ export const ChatWindow = () => {
 
     try {
       // 流式：与 generateContentStream 一致，按 chunk 追加到当前助手气泡
-      await sendChatMessage(text, historyForRequest, (piece) => {
+      await sendChatMessage(historyForRequest, (piece) => {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === assistantId ? { ...m, content: m.content + piece } : m,

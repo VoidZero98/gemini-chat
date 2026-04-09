@@ -3,10 +3,15 @@ import { GEMINI_API_KEY, GEMINI_MODEL } from "@/config/ai.config";
 import { getHttpStatus } from "./upstreamToast";
 import type { ChatMessage } from "./types";
 
-/** 429、非 503 的 5xx、无状态（多为网络）可换模型；503 与其它 4xx 不重试 */
+/**
+ * 是否改用列表中的下一个模型。
+ * - 换模型：429、404（模型不存在/当前 API 不支持）、非 503 的 5xx、无 HTTP 状态（多为网络）
+ * - 不换：503（同型号过载，换模型通常无意义）、其它 4xx（多为参数/权限问题）
+ */
 const shouldTryNextModel = (e: unknown): boolean => {
   const status = getHttpStatus(e);
   if (status === 429) return true;
+  if (status === 404) return true;
   if (status === 503) return false;
   if (status !== undefined && status >= 500) return true;
   if (status !== undefined && status >= 400 && status < 500) return false;
@@ -28,17 +33,34 @@ const getGenAI = (): GoogleGenAI => {
   return client;
 };
 
+/** Gemini API 中助手角色为 `model`，与本地 `assistant` 对应 */
+const chatMessagesToGeminiContents = (
+  messages: ChatMessage[],
+): { role: string; parts: { text: string }[] }[] => {
+  const out: { role: string; parts: { text: string }[] }[] = [];
+  for (const m of messages) {
+    const t = m.content.trim();
+    if (!t) continue;
+    out.push({
+      role: m.role === "user" ? "user" : "model",
+      parts: [{ text: t }],
+    });
+  }
+  if (out.length === 0) {
+    throw new Error("无有效对话内容");
+  }
+  return out;
+};
+
 /**
- * 流式生成；历史暂不参与请求（与原先仅发单条 message 一致）。
+ * 流式生成；`history` 为截至当前用户消息为止的完整轮次（含本轮用户），供多轮上下文。
  */
 export const sendChatMessage = async (
-  content: string,
-  _history: ChatMessage[],
+  history: ChatMessage[],
   onChunk: (piece: string) => void,
 ): Promise<void> => {
-  void _history;
   const ai = getGenAI();
-  const text = content.trim();
+  const contents = chatMessagesToGeminiContents(history);
   const models = GEMINI_MODEL;
   let lastErr: unknown;
   for (let i = 0; i < models.length; i++) {
@@ -46,7 +68,7 @@ export const sendChatMessage = async (
     try {
       const stream = await ai.models.generateContentStream({
         model: models[i],
-        contents: text,
+        contents,
       });
       for await (const chunk of stream) {
         const piece = chunk.text;
