@@ -5,25 +5,39 @@
   min-width: 0;
   width: 100%;
   max-width: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 20px;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  border-radius: 0;
+  background:
+    radial-gradient(circle at 8% 8%, rgba(255, 218, 242, 0.24) 0 10%, transparent 46%),
+    radial-gradient(circle at 92% 14%, rgba(166, 193, 238, 0.2) 0 12%, transparent 48%),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.76) 0%,
+      rgba(255, 246, 251, 0.66) 52%,
+      rgba(255, 255, 255, 0.78) 100%
+    );
   display: flex;
   flex-direction: column;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 250, 252, 0.42) 48%,
-    rgba(255, 255, 255, 0.6) 100%
-  );
 }
 
-.messageList::-webkit-scrollbar {
-  display: none;
+.messageList :global(.simplebar-mask),
+.messageList :global(.simplebar-offset),
+.messageList :global(.simplebar-content-wrapper) {
+  border-radius: 0;
+}
+
+.messageList :global(.simplebar-content-wrapper) {
+  scrollbar-width: none;
+}
+
+.messageList :global(.simplebar-content) {
+  padding: 24px 20px 30px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.messageList :global(.simplebar-track) {
+  display: none !important;
 }
 
 .messageListInner {
@@ -37,7 +51,7 @@
 }
 
 @media (max-width: 768px) {
-  .messageList {
-    padding: 12px;
+  .messageList :global(.simplebar-content) {
+    padding: 14px 12px 20px;
   }
 }

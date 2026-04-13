@@ -1,166 +1,108 @@
-import { GoogleGenAI } from "@google/genai";
-import { GEMINI_API_KEY, GEMINI_MODEL } from "@/config/ai.config";
-import { getHttpStatus } from "./upstreamToast";
-import type { ChatMessage } from "./types";
+import { apiConfig, request, tokenStore } from "@/api/core";
+import type { SendChatPayload, SendChatResult } from "./types";
 
-/**
- * 是否改用列表中的下一个模型。
- * - 换模型：429、404（模型不存在/当前 API 不支持）、非 503 的 5xx、无 HTTP 状态（多为网络）
- * - 不换：503（同型号过载，换模型通常无意义）、其它 4xx（多为参数/权限问题）
- */
-const shouldTryNextModel = (e: unknown): boolean => {
-  const status = getHttpStatus(e);
-  if (status === 429) return true;
-  if (status === 404) return true;
-  if (status === 503) return false;
-  if (status !== undefined && status >= 500) return true;
-  if (status !== undefined && status >= 400 && status < 500) return false;
-  return true;
-};
-
-let client: GoogleGenAI | null = null;
-let preferredModelIndex = 0;
-
-const getModelAttemptOrder = (
-  models: readonly string[],
-  preferredIndex: number,
-): number[] => {
-  if (models.length === 0) return [];
-  const start = ((preferredIndex % models.length) + models.length) % models.length;
-  return Array.from({ length: models.length }, (_, offset) => {
-    return (start + offset) % models.length;
+const sleep = async (ms: number): Promise<void> =>
+  new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
   });
-};
 
-const getGenAI = (): GoogleGenAI => {
-  if (!client) {
-    const apiKey = GEMINI_API_KEY;
-    if (!apiKey?.trim()) {
-      throw new Error(
-        "请复制 src/config/ai.config.example.ts 为 ai.config.local.ts 并填写 GEMINI_API_KEY",
-      );
-    }
-    client = new GoogleGenAI({ apiKey: apiKey.trim() });
-  }
-  return client;
-};
-
-/** Gemini API 中助手角色为 `model`，与本地 `assistant` 对应 */
-const chatMessagesToGeminiContents = (
-  messages: ChatMessage[],
-): { role: string; parts: { text: string }[] }[] => {
-  const out: { role: string; parts: { text: string }[] }[] = [];
-  for (const m of messages) {
-    const t = m.content.trim();
-    if (!t) continue;
-    out.push({
-      role: m.role === "user" ? "user" : "model",
-      parts: [{ text: t }],
-    });
-  }
-  if (out.length === 0) {
-    throw new Error("无有效对话内容");
-  }
-  return out;
-};
-
-/**
- * 流式生成；`history` 为截至当前用户消息为止的完整轮次（含本轮用户），供多轮上下文。
- */
-export const sendChatMessage = async (
-  history: ChatMessage[],
+const emitPieceProgressively = async (
+  piece: string,
   onChunk: (piece: string) => void,
 ): Promise<void> => {
-  const ai = getGenAI();
-  const contents = chatMessagesToGeminiContents(history);
-  const models = GEMINI_MODEL;
-  if (models.length === 0) {
-    throw new Error("GEMINI_MODEL 不能为空");
+  if (!piece) return;
+  const step = piece.length > 24 ? 2 : 1;
+  for (let index = 0; index < piece.length; index += step) {
+    onChunk(piece.slice(index, index + step));
+    await sleep(12);
   }
-  const attemptOrder = getModelAttemptOrder(models, preferredModelIndex);
-  let lastErr: unknown;
-  for (let attempt = 0; attempt < attemptOrder.length; attempt++) {
-    const modelIndex = attemptOrder[attempt];
-    let emitted = false;
-    try {
-      const stream = await ai.models.generateContentStream({
-        model: models[modelIndex],
-        contents,
-      });
-      for await (const chunk of stream) {
-        const piece = chunk.text;
-        if (piece) {
-          emitted = true;
-          onChunk(piece);
-        }
-      }
-      preferredModelIndex = modelIndex;
-      return;
-    } catch (e) {
-      lastErr = e;
-      if (emitted) throw e;
-      if (attempt < attemptOrder.length - 1 && shouldTryNextModel(e)) {
-        preferredModelIndex = (modelIndex + 1) % models.length;
-        continue;
-      }
-      throw e;
-    }
-  }
-  throw lastErr;
 };
 
-const TITLE_PROMPT_MAX_CHARS = 48;
+const parseSsePayload = (rawEvent: string): Record<string, unknown> | null => {
+  const dataLine = rawEvent
+    .split(/\r?\n/)
+    .find((item) => item.startsWith("data: "));
+  if (!dataLine) return null;
+  return JSON.parse(dataLine.slice(6)) as Record<string, unknown>;
+};
 
-/**
- * 根据首条用户消息生成简短会话标题（非流式一次调用）。
- */
-export const generateChatTitle = async (
-  userText: string,
-): Promise<string> => {
-  const trimmed = userText.trim();
-  if (!trimmed) {
-    throw new Error("empty user text");
-  }
-  const ai = getGenAI();
-  const prompt = `你是对话标题助手。根据用户的第一条消息，生成一个简短、准确的中文标题。
-要求：不超过 ${TITLE_PROMPT_MAX_CHARS} 个字符；不要引号或书名号；不要“关于”“讨论”等套话；只输出标题本身，不要换行或任何解释。
+export const sendChatMessageStream = async (
+  payload: SendChatPayload,
+  onChunk: (piece: string) => void,
+): Promise<SendChatResult> => {
+  const token = tokenStore.get();
+  const messages = payload.messages.map((item) => {
+    return {
+      role: item.role,
+      content: item.content,
+    };
+  });
+  const response = await fetch(new URL("/chat/send-stream", apiConfig.baseURL), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify({
+      sessionId: payload.sessionId,
+      title: payload.title,
+      messages,
+    }),
+  });
 
-用户消息：
-${trimmed}`;
-  const models = GEMINI_MODEL;
-  if (models.length === 0) {
-    throw new Error("GEMINI_MODEL 不能为空");
+  if (!response.ok || !response.body) {
+    throw new Error("流式请求失败");
   }
-  const attemptOrder = getModelAttemptOrder(models, preferredModelIndex);
-  let res: Awaited<ReturnType<GoogleGenAI["models"]["generateContent"]>>;
-  for (let attempt = 0; attempt < attemptOrder.length; attempt++) {
-    const modelIndex = attemptOrder[attempt];
-    try {
-      res = await ai.models.generateContent({
-        model: models[modelIndex],
-        contents: prompt,
-        config: {
-          maxOutputTokens: 128,
-          temperature: 0.3,
-        },
-      });
-      preferredModelIndex = modelIndex;
-      break;
-    } catch (e) {
-      if (attempt < attemptOrder.length - 1 && shouldTryNextModel(e)) {
-        preferredModelIndex = (modelIndex + 1) % models.length;
-        continue;
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+  let finalResult: SendChatResult | null = null;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const events = buffer.split(/\r?\n\r?\n/);
+    buffer = events.pop() ?? "";
+    for (const rawEvent of events) {
+      try {
+        const data = parseSsePayload(rawEvent);
+        if (!data) continue;
+        if (data.type === "chunk" && typeof data.piece === "string") {
+          await emitPieceProgressively(data.piece, onChunk);
+          continue;
+        }
+        if (
+          data.type === "done" &&
+          typeof data.sessionId === "number" &&
+          typeof data.title === "string" &&
+          typeof data.answer === "string"
+        ) {
+          finalResult = {
+            sessionId: data.sessionId,
+            title: data.title,
+            answer: data.answer,
+          };
+          continue;
+        }
+        if (data.type === "error" && typeof data.message === "string") {
+          throw new Error(data.message);
+        }
+      } catch (error) {
+        throw error instanceof Error ? error : new Error("流式数据解析失败");
       }
-      throw e;
     }
   }
-  const raw = res!.text?.trim() ?? "";
-  let t = raw.replace(/\s+/g, " ").replace(/^["「『]|["」』]$/g, "").trim();
-  if (t.length > TITLE_PROMPT_MAX_CHARS) {
-    t = `${t.slice(0, TITLE_PROMPT_MAX_CHARS)}…`;
+  if (!finalResult) {
+    throw new Error("流式响应未完成");
   }
-  if (!t) {
-    throw new Error("empty title from model");
-  }
-  return t;
+  return finalResult;
+};
+
+export const generateChatTitle = async (userText: string): Promise<string> => {
+  const title = await request<string>("/chat/title", {
+    method: "POST",
+    body: { text: userText },
+  });
+  return title;
 };

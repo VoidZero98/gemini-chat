@@ -1,6 +1,20 @@
-import { ConfigProvider } from "antd";
-import { ChatWindow } from "@/pages/chatWindow";
+import { Suspense, lazy } from "react";
+import { App as AntApp, ConfigProvider, Spin } from "antd";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { tokenStore } from "@/api";
 import "./App.css";
+
+const ChatWindow = lazy(() =>
+  import("@/pages/chatWindow").then((module) => ({ default: module.ChatWindow })),
+);
+
+const LoginPage = lazy(() =>
+  import("@/pages/auth").then((module) => ({ default: module.LoginPage })),
+);
+
+const ProfilePage = lazy(() =>
+  import("@/pages/profile").then((module) => ({ default: module.ProfilePage })),
+);
 
 const chatTheme = {
   token: {
@@ -30,13 +44,58 @@ const chatTheme = {
   },
 };
 
+const hasLoginToken = (): boolean => {
+  return Boolean(tokenStore.get());
+};
+
+const RequireAuth = () => {
+  if (!hasLoginToken()) {
+    return <Navigate to="/login" replace />;
+  }
+  return <Outlet />;
+};
+
+const OnlyGuest = () => {
+  if (hasLoginToken()) {
+    return <Navigate to="/chat" replace />;
+  }
+  return <Outlet />;
+};
+
+const RootRedirect = () => {
+  return <Navigate to={hasLoginToken() ? "/chat" : "/login"} replace />;
+};
+
+const RouteLoading = () => <Spin size="large" />;
+
 const App = () => (
   <ConfigProvider theme={chatTheme}>
-    <div className="app-root">
-      <div className="app-chat-shell">
-        <ChatWindow />
+    <AntApp>
+      <div className="app-root">
+        <div className="app-page-shell">
+          <Suspense fallback={<RouteLoading />}>
+            <Routes>
+              <Route path="/" element={<RootRedirect />} />
+              <Route element={<OnlyGuest />}>
+                <Route path="/login" element={<LoginPage />} />
+              </Route>
+              <Route element={<RequireAuth />}>
+                <Route
+                  path="/chat"
+                  element={
+                    <div className="app-chat-shell">
+                      <ChatWindow />
+                    </div>
+                  }
+                />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
+              <Route path="*" element={<RootRedirect />} />
+            </Routes>
+          </Suspense>
+        </div>
       </div>
-    </div>
+    </AntApp>
   </ConfigProvider>
 );
 

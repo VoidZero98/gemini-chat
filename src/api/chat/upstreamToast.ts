@@ -1,4 +1,4 @@
-const TOAST_STATUSES = new Set([429, 503]);
+const TOAST_STATUSES = new Set([429, 502, 503, 504]);
 
 /** 从 SDK/网关返回的 JSON 字符串（可能多层嵌套）里取 HTTP 业务码 */
 const getStatusFromJsonString = (raw: string): number | undefined => {
@@ -58,12 +58,18 @@ export const getHttpStatus = (e: unknown): number | undefined => {
 export const getUpstreamToastMessage = (e: unknown): string | undefined => {
   const status = getHttpStatus(e);
   if (!status || !TOAST_STATUSES.has(status)) return undefined;
-  // 429/503 使用固定中文提示；勿先返回 e.message，否则永远走不到下面分支
+  // 对上游常见失败状态给出友好提示。
   if (status === 429) {
     return "今日额度已用完，请明天再试；也可在 Google AI Studio 查看或提升配额。";
   }
+  if (status === 502) {
+    return "模型服务暂时不可用，请稍后重试。";
+  }
   if (status === 503) {
     return "此型号目前需求量较大。需求高峰通常是暂时的。请稍后再试。";
+  }
+  if (status === 504) {
+    return "模型响应超时，请稍后重试或精简问题后再试。";
   }
   return undefined;
 };

@@ -1,0 +1,97 @@
+.page {
+  min-height: 100%;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 680px;
+  border-radius: 14px !important;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.title {
+  margin: 0 !important;
+  color: #9d174d !important;
+}
+
+.subTitle {
+  margin-bottom: 18px;
+  color: #be6b98;
+}
+
+.avatarPreviewBox {
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid rgba(251, 194, 235, 0.4);
+  border-radius: 10px;
+  background: rgba(255, 247, 251, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatarPreviewImage {
+  flex-shrink: 0;
+  background: linear-gradient(145deg, #fb923c, #fde68a) !important;
+  border: 2px solid rgba(255, 255, 255, 0.88);
+}
+
+.avatarPreviewText {
+  font-size: 12px;
+  color: #be6b98;
+}
+
+.saveBtn {
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.62) !important;
+  background: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%) !important;
+  box-shadow: 0 8px 20px rgba(251, 194, 235, 0.34);
+}
+
+.saveBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 22px rgba(251, 194, 235, 0.38),
+    0 3px 10px rgba(166, 193, 238, 0.24);
+}
+
+.cancelBtn {
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  background: linear-gradient(120deg, #ff9a9e 0%, #fecfef 100%) !important;
+  box-shadow: 0 8px 20px rgba(255, 154, 158, 0.26);
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.cancelBtn:hover:not(:disabled) {
+  background: linear-gradient(120deg, #f472b6 0%, #fbc2eb 100%) !important;
+  box-shadow:
+    0 10px 20px rgba(244, 114, 182, 0.32),
+    0 3px 10px rgba(166, 193, 238, 0.22);
+  color: #fff !important;
+}
+
+.backBtn {
+  border-radius: 10px !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  background: linear-gradient(120deg, #ff9a9e 0%, #fecfef 100%) !important;
+  box-shadow: 0 8px 20px rgba(255, 154, 158, 0.26);
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.backBtn:hover:not(:disabled) {
+  background: linear-gradient(120deg, #f472b6 0%, #fbc2eb 100%) !important;
+  box-shadow:
+    0 10px 20px rgba(244, 114, 182, 0.32),
+    0 3px 10px rgba(166, 193, 238, 0.22);
+  color: #fff !important;
+}

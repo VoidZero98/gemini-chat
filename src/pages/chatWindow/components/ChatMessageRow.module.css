@@ -1,14 +1,16 @@
 .row {
+  box-sizing: border-box;
   min-width: 0;
   max-width: 100%;
+  padding: 16px;
 }
 
 /* AI：奶粉渐变，轻盈可爱 */
 .avatarAi {
   flex-shrink: 0;
-  background: linear-gradient(145deg, #f9a8d4, #fce7f3) !important;
+  background: linear-gradient(145deg, #fbc2eb, #a6c1ee) !important;
   border: 2px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 2px 12px rgba(249, 168, 212, 0.22);
+  box-shadow: 0 2px 12px rgba(251, 194, 235, 0.32);
 }
 
 /* 用户：蜜桃杏黄，减轻对比但仍与 AI 区分 */
@@ -51,15 +53,17 @@
 
 .bubbleCardAssistant {
   margin-inline-end: auto;
-  border: 1px solid rgba(251, 207, 232, 0.75) !important;
+  border: 1px solid rgba(251, 194, 235, 0.62) !important;
   /* 长回复保持浅粉白，避免底部发闷 */
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.98) 0%,
-    rgba(255, 250, 252, 0.94) 38%,
+    rgba(255, 244, 250, 0.94) 38%,
     rgba(255, 255, 255, 0.99) 100%
   ) !important;
-  box-shadow: 0 4px 16px rgba(232, 121, 185, 0.08);
+  box-shadow:
+    0 6px 18px rgba(251, 194, 235, 0.2),
+    0 2px 8px rgba(166, 193, 238, 0.12);
 }
 
 .userParagraph {
@@ -154,6 +158,10 @@
 }
 
 @media (max-width: 768px) {
+  .row {
+    padding-inline: 6px;
+  }
+
   .bubbleColumn {
     flex-basis: 88%;
     max-width: 88%;

@@ -10,9 +10,14 @@ type Props = {
   message: ChatMessage;
   /** 当前轮次助手是否仍在等待首包 */
   assistantPending: boolean;
+  userAvatarUrl?: string;
 };
 
-export const ChatMessageRow = ({ message, assistantPending }: Props) => {
+export const ChatMessageRow = ({
+  message,
+  assistantPending,
+  userAvatarUrl,
+}: Props) => {
   const isUser = message.role === "user";
 
   return (
@@ -75,7 +80,11 @@ export const ChatMessageRow = ({ message, assistantPending }: Props) => {
           </Flex>
         )}
       </Flex>
-      {isUser && <Avatar className={styles.avatarUser}>我</Avatar>}
+      {isUser && (
+        <Avatar className={styles.avatarUser} src={userAvatarUrl}>
+          我
+        </Avatar>
+      )}
     </Flex>
   );
 };

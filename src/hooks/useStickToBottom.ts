@@ -16,6 +16,7 @@ export const useStickToBottom = (
 ) => {
   const stickRef = useRef(true);
   const ignoreProgrammaticScrollRef = useRef(false);
+  const lastTouchYRef = useRef<number | null>(null);
 
   useLayoutEffect(() => {
     const el = scrollRef.current;
@@ -25,8 +26,38 @@ export const useStickToBottom = (
       const gap = el.scrollHeight - el.scrollTop - el.clientHeight;
       stickRef.current = gap < NEAR_BOTTOM_PX;
     };
+    const onWheel = (event: WheelEvent) => {
+      // 用户上滚（看历史）时，立即关闭吸底，避免流式更新把视图拉回底部。
+      if (event.deltaY < 0) {
+        stickRef.current = false;
+      }
+    };
+    const onTouchStart = (event: TouchEvent) => {
+      lastTouchYRef.current = event.touches[0]?.clientY ?? null;
+    };
+    const onTouchMove = (event: TouchEvent) => {
+      const currentY = event.touches[0]?.clientY;
+      if (currentY == null || lastTouchYRef.current == null) return;
+      if (currentY > lastTouchYRef.current + 1) {
+        stickRef.current = false;
+      }
+      lastTouchYRef.current = currentY;
+    };
+    const onTouchEnd = () => {
+      lastTouchYRef.current = null;
+    };
     el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
+    el.addEventListener("wheel", onWheel, { passive: true });
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchmove", onTouchMove, { passive: true });
+    el.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchmove", onTouchMove);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
   }, [scrollRef]);
 
   useLayoutEffect(() => {

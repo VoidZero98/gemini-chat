@@ -1,145 +1,494 @@
-.root {
-  box-sizing: border-box;
-  flex: 1;
-  min-height: 0;
-  min-width: 0;
+.layoutRoot {
   height: 100%;
-  width: 100%;
-  max-width: min(880px, 100%);
-  margin: 0 auto;
-  padding: 16px;
-  overflow: hidden;
+  min-height: 0;
+  background: transparent !important;
 }
 
-.card {
+.mainLayout {
   flex: 1;
   min-height: 0;
-  min-width: 0;
-  width: 100%;
-  max-width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  gap: 14px;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+.sidebar {
+  min-height: 0;
+  height: auto;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 245, 251, 0.92) 52%,
+    rgba(255, 255, 255, 0.97) 100%
+  ) !important;
+  border: 1px solid rgba(251, 194, 235, 0.45);
+  border-radius: 14px;
+  box-shadow:
+    0 10px 26px rgba(251, 194, 235, 0.22),
+    0 3px 10px rgba(166, 193, 238, 0.16);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 16px;
-  box-sizing: border-box;
-  /* 与 ant-card-bordered 一致用粉边，避免左右显白条 */
-  border: 1px solid rgba(251, 207, 232, 0.92);
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.88) 0%,
-    rgba(255, 250, 252, 0.72) 45%,
-    rgba(253, 242, 248, 0.45) 100%
-  );
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
-  box-shadow:
-    0 4px 6px -1px rgba(220, 150, 185, 0.04),
-    0 14px 32px -10px rgba(249, 168, 212, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
-}
-
-.card :global(.ant-card-head) {
-  flex-shrink: 0;
   position: relative;
-  z-index: 2;
-  margin: 0;
-  padding-inline: 20px;
-  overflow: hidden;
-  border-radius: 16px 16px 0 0;
-  border-bottom: 1px solid rgba(251, 207, 232, 0.65);
-  /* 底层不透底，避免右侧半透明渐变透出白缝 */
-  background: #fdf2f8;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
-/* 铺满整块 head（含圆角），避免右侧与卡片圆角之间露白 */
-.card :global(.ant-card-head)::before {
+.sidebar::before {
   content: "";
   position: absolute;
   inset: 0;
-  z-index: 0;
-  border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(
-    92deg,
-    rgba(255, 255, 255, 0.88) 0%,
-    rgba(253, 242, 248, 0.82) 35%,
-    rgba(252, 231, 243, 0.75) 68%,
-    rgba(251, 207, 232, 0.72) 100%
-  );
+  background:
+    radial-gradient(
+      ellipse 90% 65% at -8% -12%,
+      rgba(255, 210, 234, 0.34),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 95% 80% at 110% 4%,
+      rgba(207, 226, 255, 0.24),
+      transparent 62%
+    );
 }
 
-.card :global(.ant-card-head-wrapper) {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  min-width: 0;
+.sidebar :global(.ant-layout-sider-children) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.sidebarTop {
+  padding: 14px 12px 12px;
+  border-bottom: 1px solid rgba(251, 194, 235, 0.38);
+}
+
+.brandTitle {
+  margin: 0 !important;
+  color: rgba(143, 35, 90, 0.9) !important;
+  font-size: 32px !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.2px;
+  font-weight: 700 !important;
+}
+
+.brandSubTitle {
+  margin-top: 5px;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  font-size: 10px;
+  border-radius: 999px;
+  color: #b06a92;
+  background: rgba(252, 237, 247, 0.56);
+  border: 1px solid rgba(244, 204, 228, 0.62);
+}
+
+.userProfileCard {
+  margin-top: 12px;
+  padding: 11px 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.card :global(.ant-card-extra) {
-  flex-shrink: 0;
-  margin: 0 !important;
-  margin-inline-start: auto !important;
-  padding-inline-end: 0 !important;
-}
-
-.card :global(.ant-card-head-title) {
-  display: inline-block;
-  padding-inline-start: 12px;
-  margin-inline-start: 2px;
-  border-left: 4px solid #f9a8d4;
-  border-radius: 3px;
-  font-weight: 700;
-  font-size: 1.125rem;
-  letter-spacing: 0.06em;
-  line-height: 1.35;
+  gap: 10px;
+  border: 1px solid rgba(238, 167, 210, 0.82);
+  border-radius: 12px;
   background: linear-gradient(
-    92deg,
-    #e8a0c8 0%,
-    #f472b6 38%,
-    #f9a8d4 72%,
-    #fbb6ce 100%
+    155deg,
+    rgba(255, 250, 253, 0.96) 0%,
+    rgba(255, 244, 250, 0.82) 100%
   );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  appearance: none;
+  transition: all 0.24s ease;
+  box-shadow:
+    0 12px 22px rgba(240, 162, 208, 0.28),
+    0 3px 10px rgba(180, 140, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84);
 }
 
-/* 顶部「清空」：主题色镂空，与 ConfigProvider 主色一致 */
-.card :global(.ant-card-extra .ant-btn-color-primary.ant-btn-variant-outlined) {
-  font-weight: 500;
-  background: rgba(255, 255, 255, 0.42);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+.userProfileCard:hover {
+  border-color: rgba(241, 158, 205, 0.85);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 251, 254, 0.98) 0%,
+    rgba(253, 238, 248, 0.9) 100%
+  );
+  box-shadow:
+    0 14px 26px rgba(243, 173, 216, 0.3),
+    0 4px 10px rgba(180, 140, 255, 0.14);
+  transform: translateY(-1px);
 }
 
-.card
+.userProfileAvatar {
+  flex-shrink: 0;
+  background: linear-gradient(150deg, #f4a6d5, #b9d4ff) !important;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 3px 10px rgba(236, 148, 199, 0.3);
+}
+
+.userProfileMeta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.userProfileName {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7f1d4f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userProfileBio {
+  font-size: 11px;
+  color: #aa5f89;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebarActions {
+  margin-top: 10px;
+  justify-content: space-between;
+}
+
+.newSessionBtn {
+  flex: 1;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.62) !important;
+  background: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%) !important;
+  box-shadow: 0 8px 20px rgba(251, 194, 235, 0.34);
+}
+
+.newSessionBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 22px rgba(251, 194, 235, 0.38),
+    0 3px 10px rgba(166, 193, 238, 0.24);
+}
+
+.logoutBtn {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  background: linear-gradient(120deg, #ff9a9e 0%, #fecfef 100%) !important;
+  box-shadow: 0 8px 20px rgba(255, 154, 158, 0.26);
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.logoutBtn:hover:not(:disabled) {
+  background: linear-gradient(120deg, #f472b6 0%, #fbc2eb 100%) !important;
+  box-shadow:
+    0 10px 20px rgba(244, 114, 182, 0.32),
+    0 3px 10px rgba(166, 193, 238, 0.22);
+  color: #fff !important;
+}
+
+.logoutBtn:global(.ant-btn-dangerous) {
+  border-color: rgba(255, 255, 255, 0.55) !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.logoutBtn:global(.ant-btn-dangerous:hover) {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  color: #fff !important;
+}
+
+.sidebarHeader {
+  padding: 12px 14px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9d174d;
+  letter-spacing: 0.2px;
+}
+
+.sidebarScrollHost {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebarState {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 8px;
+}
+
+.sidebarList {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  padding: 4px 12px 12px;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.sidebarList :global(.simplebar-mask),
+.sidebarList :global(.simplebar-offset),
+.sidebarList :global(.simplebar-content-wrapper) {
+  border-radius: 10px;
+}
+
+.sidebarList :global(.simplebar-content-wrapper) {
+  scrollbar-width: none;
+}
+
+.sidebarList :global(.simplebar-content) {
+  padding: 20px 2px 2px;
+}
+
+.sidebarList :global(.simplebar-track.simplebar-vertical) {
+  width: 10px;
+  right: 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebarList:hover :global(.simplebar-track.simplebar-vertical),
+.sidebarList :global(.simplebar-track.simplebar-vertical:hover) {
+  opacity: 1;
+}
+
+.sidebarList :global(.simplebar-track.simplebar-vertical::before) {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 1px;
+  right: 1px;
+  border-radius: 999px;
+  background: rgba(255, 241, 247, 0.88);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.sidebarList:hover :global(.simplebar-track.simplebar-vertical::before),
+.sidebarList :global(.simplebar-track.simplebar-vertical:hover::before) {
+  opacity: 1;
+}
+
+.sidebarList :global(.simplebar-scrollbar) {
+  left: 1px;
+  right: 1px;
+}
+
+.sidebarList :global(.simplebar-scrollbar::before) {
+  inset: 1px;
+  border-radius: 999px;
+  opacity: 0;
+  transition: all 0.2s ease;
+  background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 100%);
+}
+
+.sidebarList:hover :global(.simplebar-scrollbar::before) {
+  opacity: 1;
+}
+
+.sidebarList
   :global(
-    .ant-card-extra .ant-btn-color-primary.ant-btn-variant-outlined:disabled
+    .simplebar-track.simplebar-vertical:hover .simplebar-scrollbar::before
   ) {
-  background: rgba(255, 255, 255, 0.28);
+  inset: 0;
+  background: linear-gradient(180deg, #f472b6 0%, #fbc2eb 100%);
 }
 
-.cardBody {
+.sidebarItem {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  padding: 11px 12px;
+  margin-bottom: 8px;
+  border-radius: 11px;
+  border: 1px solid rgba(251, 194, 235, 0.35);
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.86) 0%,
+    rgba(255, 247, 251, 0.74) 100%
+  );
+  cursor: pointer;
+  transition: all 0.24s ease;
+}
+
+.sidebarItemTop {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sidebarDeleteButton {
+  opacity: 0;
+  pointer-events: none;
+  color: #e879a9 !important;
+  transition: opacity 0.2s ease;
+}
+
+.sidebarItem:hover .sidebarDeleteButton,
+.sidebarItemActive .sidebarDeleteButton {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebarItem:hover {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 247, 252, 0.98) 0%,
+    rgba(246, 244, 255, 0.88) 100%
+  );
+  border-color: rgba(249, 168, 212, 0.7);
+  box-shadow:
+    0 8px 16px rgba(251, 194, 235, 0.18),
+    0 2px 8px rgba(166, 193, 238, 0.12);
+  transform: translateY(-1px);
+}
+
+.sidebarItemActive {
+  background: linear-gradient(
+    120deg,
+    rgba(251, 194, 235, 0.2) 0%,
+    rgba(166, 193, 238, 0.2) 100%
+  );
+  border-color: rgba(249, 168, 212, 0.8);
+  box-shadow:
+    0 10px 20px rgba(251, 194, 235, 0.26),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.sidebarTitle {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #7f1d4f;
+  font-weight: 600;
+}
+
+.sidebarTime {
+  font-size: 12px;
+  color: #be6b98;
+  opacity: 0.95;
+}
+
+.content {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(251, 194, 235, 0.45);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    rgba(255, 247, 251, 0.94) 60%,
+    rgba(255, 255, 255, 0.98) 100%
+  );
+  box-shadow:
+    0 10px 28px rgba(251, 194, 235, 0.2),
+    0 3px 10px rgba(166, 193, 238, 0.12);
+}
+
+.contentMask {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.65);
+  z-index: 10;
+  border-radius: 14px;
+}
+
+.chatPanel {
   flex: 1;
   min-height: 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 !important;
-  gap: 0;
   overflow: hidden;
 }
 
-/* 消息区相对定位，用于右下角「回到顶部」悬浮按钮 */
+.chatPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 13px 16px 10px;
+  border-bottom: 1px solid rgba(251, 194, 235, 0.38);
+}
+
+.chatTitle {
+  min-width: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #7f1d4f;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chatHint {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: #9d174d;
+  background: linear-gradient(
+    120deg,
+    rgba(251, 194, 235, 0.3),
+    rgba(166, 193, 238, 0.25)
+  );
+  border: 1px solid rgba(249, 168, 212, 0.5);
+  border-radius: 999px;
+  padding: 2px 9px;
+}
+
+.sidebar::after,
+.content::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  width: 54px;
+  height: 22px;
+  pointer-events: none;
+  opacity: 0.45;
+  background-image:
+    radial-gradient(
+      circle at 10px 14px,
+      rgba(244, 114, 182, 0.55) 0 2px,
+      transparent 2.5px
+    ),
+    radial-gradient(
+      circle at 24px 8px,
+      rgba(251, 146, 60, 0.35) 0 1.6px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 37px 14px,
+      rgba(236, 72, 153, 0.52) 0 2px,
+      transparent 2.5px
+    ),
+    radial-gradient(
+      circle at 50px 7px,
+      rgba(251, 194, 235, 0.85) 0 1.8px,
+      transparent 2.2px
+    );
+}
+
 .scrollWrap {
   position: relative;
-  z-index: 1;
   flex: 1;
   min-height: 0;
   min-width: 0;
@@ -150,43 +499,21 @@
 
 .backTop {
   position: absolute !important;
-  inset-inline-end: 10px;
-  bottom: 10px;
+  inset-inline-end: 14px;
+  bottom: 14px;
   z-index: 5;
-  box-shadow: 0 6px 18px rgba(249, 168, 212, 0.25) !important;
 }
 
-.backTop:global(.ant-float-btn-primary) {
-  background: linear-gradient(145deg, #f9a8d4 0%, #fbb6ce 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.6) !important;
-}
-
-.backTop:global(.ant-float-btn-primary:hover) {
-  background: linear-gradient(145deg, #f472b6 0%, #f9a8d4 100%) !important;
-}
-
-@media (max-width: 768px) {
-  .root {
-    max-width: 100%;
-    padding: 12px;
-    padding-top: max(12px, env(safe-area-inset-top, 0));
-    padding-bottom: max(12px, env(safe-area-inset-bottom, 0));
-    padding-left: max(12px, env(safe-area-inset-left, 0));
-    padding-right: max(12px, env(safe-area-inset-right, 0));
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
   }
 
-  .card :global(.ant-card-head) {
-    padding-inline: 16px;
-    padding-block: 14px;
-    min-height: 48px;
+  .mainLayout {
+    padding: 10px;
   }
 
-  .card :global(.ant-card-head-title) {
-    font-size: 16px;
-  }
-
-  .backTop {
-    inset-inline-end: 8px;
-    bottom: 8px;
+  .content {
+    border-radius: 12px;
   }
 }
